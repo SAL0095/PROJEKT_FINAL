@@ -143,6 +143,32 @@ public class UVActivity extends AppCompatActivity {
             }
         }
 
+        @Override
+        protected void onPostExecute(List<UVEntry> result) {
+            setContentView(R.layout.activity_uv);
+
+            TextView text = (TextView)findViewById(R.id.textView4);
+
+            if (result == null){
+                text.setText("Data se nepodarilo nacist. Zkontrolujte sve pripojeni k internetu.");
+            } else {
+                text.setText("Data se uspesne nacetly.");
+
+                if (result != null){
+                    DataPoint[] points = new DataPoint[result.size()];
+                    for (int i = 0; i < result.size(); i++){
+                        points[i] = new DataPoint(i, result.get(i).value);
+                    }
+                    GraphView graph = (GraphView) findViewById(R.id.graph1);
+                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
+                    graph.addSeries(series);
+                } else {
+                    text.setText("Nejprve musite stahnout data.");
+                }
+            }
+
+        }
+    }
 
     private List<UVEntry> loadJsonFromNetwork(String urlString) throws IOException {
         InputStream stream = null;
